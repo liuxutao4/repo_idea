@@ -78,7 +78,21 @@ public class RoleController {
             return new ResponseResult(true, 200, "更新角色成功", null);
         }
 
+    }
 
+    @RequestMapping("/findResourceListByRoleId")
+    public ResponseResult findResourceListByRoleId(Integer roleId) {
+
+        List<ResourceCategory> list = roleService.findResourceListByRoleId(roleId);
+
+        return new ResponseResult(true, 200, "获取角色的资源信息成功", list);
+    }
+
+    @RequestMapping("/roleContextResource")
+    public ResponseResult roleContextResource(@RequestBody RoleResourceVo roleResourceVo) {
+
+        roleService.roleContextResource(roleResourceVo);
+        return new ResponseResult(true, 200, "角色分配资源成功", null);
     }
 
 }

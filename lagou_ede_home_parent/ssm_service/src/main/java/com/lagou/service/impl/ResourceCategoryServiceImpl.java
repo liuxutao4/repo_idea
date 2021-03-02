@@ -6,6 +6,7 @@ import com.lagou.service.ResourceCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -18,5 +19,33 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
     @Override
     public List<ResourceCategory> findAllResourceCategory() {
         return resourceCategoryMapper.findAllResourceCategory();
+    }
+
+    @Override
+    public void saveResourceCategory(ResourceCategory resourceCategory) {
+
+        resourceCategory.setCreatedTime(new Date());
+        resourceCategory.setUpdatedTime(new Date());
+        resourceCategory.setCreatedBy("system");
+        resourceCategory.setUpdatedBy("system");
+
+        resourceCategoryMapper.saveResourceCategory(resourceCategory);
+    }
+
+    @Override
+    public void updateResourceCategory(ResourceCategory resourceCategory) {
+
+        resourceCategory.setUpdatedTime(new Date());
+        resourceCategory.setUpdatedBy("system");
+
+        resourceCategoryMapper.updateResourceCategory(resourceCategory);
+    }
+
+
+    @Override
+    public void deleteResourceCategory(Integer id) {
+
+        resourceCategoryMapper.deleteResourceCategory(id);
+        resourceCategoryMapper.deleteResourceByCategoryId(id);
     }
 }

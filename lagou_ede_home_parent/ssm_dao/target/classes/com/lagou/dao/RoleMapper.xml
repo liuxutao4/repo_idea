@@ -51,14 +51,8 @@
             <if test="description != null and description != ''">
                 description = #{description},
             </if>
-            <if test="createdTime != null">
-                created_time = #{createdTime},
-            </if>
             <if test="updatedTime != null">
                 updated_time = #{updatedTime},
-            </if>
-            <if test="createdBy != null and createdBy != ''">
-                created_by = #{createdBy},
             </if>
             <if test="updatedBy != null and updatedBy != ''">
                 updated_by = #{updatedBy},
@@ -70,5 +64,38 @@
             </if>
         </where>
     </update>
+
+    <select id="findResourceCategoryByRoleId" parameterType="int" resultType="ResourceCategory">
+        SELECT
+          *
+        FROM
+          resource_category rc
+        WHERE rc.id IN
+          (SELECT DISTINCT
+            r.category_id
+          FROM
+            resource r
+            INNER JOIN role_resource_relation rr
+              ON r.id = rr.resource_id
+          WHERE rr.role_id = #{roleId})
+    </select>
+
+    <select id="findResourceByRoleId" parameterType="int" resultType="Resource">
+        SELECT r.* FROM resource r inner JOIN role_resource_relation rr ON r.id = rr.resource_id WHERE rr.role_id = #{roleId}
+    </select>
+
+    <delete id="deleteRoleContextResource" parameterType="int">
+        delete from role_resource_relation where role_id = #{roleId}
+    </delete>
+
+    <insert id="roleContextResource" parameterType="Role_resource_relation">
+        insert into role_resource_relation values (null,#{resourceId},#{roleId},#{createdTime},#{updatedTime},#{createdBy},#{updatedBy})
+    </insert>
+
+
+
+
+
+
 
 </mapper>

@@ -1,8 +1,6 @@
 package com.lagou.service;
 
-import com.lagou.domain.Role;
-import com.lagou.domain.RoleMenuVo;
-import com.lagou.domain.Role_menu_relation;
+import com.lagou.domain.*;
 
 import java.util.List;
 
@@ -37,4 +35,15 @@ public interface RoleService {
         更新角色
      */
     public void updateRole(Role role);
+
+    /*
+        获取当前角色拥有的资源分类和资源信息
+     */
+    public List<ResourceCategory> findResourceListByRoleId(Integer roleId);
+
+    /*
+        为角色分配资源
+     */
+    public void roleContextResource(RoleResourceVo roleResourceVo);
+
 }

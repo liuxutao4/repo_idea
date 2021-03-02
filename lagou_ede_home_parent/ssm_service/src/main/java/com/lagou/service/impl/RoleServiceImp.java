@@ -1,9 +1,7 @@
 package com.lagou.service.impl;
 
 import com.lagou.dao.RoleMapper;
-import com.lagou.domain.Role;
-import com.lagou.domain.RoleMenuVo;
-import com.lagou.domain.Role_menu_relation;
+import com.lagou.domain.*;
 import com.lagou.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -72,6 +70,48 @@ public class RoleServiceImp implements RoleService {
         role.setUpdatedBy("system");
 
         roleMapper.updateRole(role);
+    }
+
+    @Override
+    public List<ResourceCategory> findResourceListByRoleId(Integer roleId) {
+
+        List<Resource> resourceList = roleMapper.findResourceByRoleId(roleId);
+        if (resourceList.isEmpty()) {
+            return null;
+        }
+
+        List<ResourceCategory> resourceCategoryList = roleMapper.findResourceCategoryByRoleId(roleId);
+
+        for (Resource resource : resourceList) {
+            for (ResourceCategory resourceCategory : resourceCategoryList) {
+                if (resource.getCategoryId().equals(resourceCategory.getId())) {
+                    resourceCategory.getResourceList().add(resource);
+                    break;
+                }
+            }
+        }
+
+        return resourceCategoryList;
+
+    }
+
+    @Override
+    public void roleContextResource(RoleResourceVo roleResourceVo) {
+
+        roleMapper.deleteRoleContextResource(roleResourceVo.getRoleId());
+
+        for (Integer ResourceId : roleResourceVo.getResourceIdList()) {
+            Role_resource_relation role_resource_relation = new Role_resource_relation();
+            role_resource_relation.setCreatedBy("system");
+            role_resource_relation.setUpdatedBy("system");
+            role_resource_relation.setCreatedTime(new Date());
+            role_resource_relation.setUpdatedTime(new Date());
+            role_resource_relation.setResourceId(ResourceId);
+            role_resource_relation.setRoleId(roleResourceVo.getRoleId());
+
+            roleMapper.roleContextResource(role_resource_relation);
+        }
+
     }
 
 }
